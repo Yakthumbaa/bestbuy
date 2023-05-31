@@ -1,5 +1,5 @@
-import bestbuy.products
-import bestbuy.store
+import product
+import store
 
 
 def display_menu():
@@ -186,9 +186,10 @@ def start(best_buy, valid_options):
 
 
 def main():
-    product_list = [products.Product("MacBook Air M2", price=1450, quantity=100),
-                    products.Product("Bose QuietComfort Earbuds", price=250, quantity=500),
-                    products.Product("Google Pixel 7", price=500, quantity=250)
+    product_list = [product.Product("MacBook Air M2", price=1450, quantity=100),
+                    product.Product("Bose QuietComfort Earbuds", price=250, quantity=500),
+                    product.Product("Nothing phone 1", price=440, quantity=0),
+                    product.Product("Google Pixel 7", price=500, quantity=250)
                     ]
     best_buy = store.Store(product_list)
     valid_options = [1, 2, 3, 4]

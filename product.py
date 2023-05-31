@@ -11,11 +11,14 @@ class Product:
         """
         if not name or not price or not quantity:
             raise ValueError("Required parameter: Argument cannot be blank!")
+        elif price < 0 or quantity < 0:
+            raise ValueError("Price and/or quantity cannot be a negative number!")
         else:
             self.name = name
             self.price = price
             self.quantity = quantity
             self.active = True
+            # self.active = True if quantity > 0 else False
 
     def get_quantity(self) -> float:
         """
@@ -26,11 +29,16 @@ class Product:
 
     def set_quantity(self, new_quantity):
         """
-        Setter method to change the quantity in stock to the new quantity
+        Setter method to change the quantity in stock to the new quantity. Every time the quantity is
+        changed, is_active() will be toggled depending on the condition.
         @param new_quantity:
         @return:
         """
         self.quantity = new_quantity
+        if self.quantity == 0:
+            self.deactivate()
+        else:  # if we decide to add a feature to re-stock in the future
+            self.activate()
 
     def is_active(self) -> bool:
         return self.active
@@ -56,7 +64,7 @@ class Product:
         if quantity > self.quantity:
             raise ValueError(f"There is not enough in stock. Available quantity = {self.quantity}")
         else:
-            self.quantity -= quantity
+            self.set_quantity(self.quantity - quantity)
             total_price = self.price * quantity
         return total_price
 
