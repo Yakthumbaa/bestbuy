@@ -38,7 +38,18 @@ def test_inactive_when_zero():
     assert macbook_air_m2.is_active() is True
 
 
-def test_buy():
+def test_buy_modifies_qty():
+    """
+    Test that product purchase modifies the quantity and returns the right output.
+    """
+    macbook_air_m2 = product.Product("MacBook Air M2", price=1450, quantity=100)
+    macbook_air_m2.buy(22)
+    assert macbook_air_m2.quantity == 78
+    macbook_air_m2.buy(58)
+    assert macbook_air_m2.quantity == 20
+
+
+def test_buy_too_much():
     """
     Test that buying a larger quantity than exists invokes exception.
     """
