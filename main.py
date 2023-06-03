@@ -1,4 +1,4 @@
-import product
+import products
 import store
 
 
@@ -113,8 +113,11 @@ def has_enough_qty(basket) -> bool:
         product = item[0]
         quantity = item[1]
         available_qty = product.get_quantity()
-        if available_qty < quantity:
-            return False
+        if not isinstance(item, products.NonStockedProduct):
+            continue
+        else:
+            if available_qty < quantity:
+                return False
     return True
 
 
@@ -186,10 +189,20 @@ def start(best_buy, valid_options):
 
 
 def main():
-    product_list = [product.Product("MacBook Air M2", price=1450, quantity=100),
-                    product.Product("Bose QuietComfort Earbuds", price=250, quantity=500),
-                    product.Product("Nothing phone 1", price=440, quantity=0),
-                    product.Product("Google Pixel 7", price=500, quantity=250)
+    """
+    product_list = [products.Product("MacBook Air M2", price=1450, quantity=100),
+                    products.Product("Bose QuietComfort Earbuds", price=250, quantity=500),
+                    products.Product("Nothing phone 1", price=440, quantity=0),
+                    products.Product("Google Pixel 7", price=500, quantity=250)
+                    ]
+    best_buy = store.Store(product_list)
+    """
+    # setup initial stock of inventory
+    product_list = [products.Product("MacBook Air M2", price=1450, quantity=100),
+                    products.Product("Bose QuietComfort Earbuds", price=250, quantity=500),
+                    products.Product("Google Pixel 7", price=500, quantity=250),
+                    products.NonStockedProduct("Windows License", price=125),
+                    products.LimitedProduct("Shipping", price=10, quantity=250, maximum=1)
                     ]
     best_buy = store.Store(product_list)
     valid_options = [1, 2, 3, 4]

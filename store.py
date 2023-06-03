@@ -59,6 +59,6 @@ class Store:
             try:
                 total_price += product.buy(quantity)
             except ValueError:
-                # Catch the Exception raised but pass it on to the caller
-                raise ValueError
+                # Catch the Exception but pass it on to the caller
+                raise
         return total_price
