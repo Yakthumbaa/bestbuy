@@ -113,6 +113,9 @@ def has_enough_qty(basket) -> bool:
         available_qty = product.get_quantity()
         if isinstance(product, products.NonStockedProduct):
             continue
+        elif isinstance(product, products.LimitedProduct):
+            if quantity > available_qty or quantity > product.maximum:
+                return False
         else:
             if quantity > available_qty:
                 return False
