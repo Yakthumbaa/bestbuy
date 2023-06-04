@@ -8,14 +8,14 @@ b) LimitedProduct - this can only be purchased once e.g. delivery charge, etc.
 
 class Product:
 
-    def __init__(self, name, price, quantity):
+    def __init__(self, name, price, quantity, promotion=None):
         """
         Constructor --> If an argument is blank then this method throws ValueError Exception.
         This exception needs to be handled by the caller.
         :raises ValueError: if an argument is an empty string.
-        @param name:
-        @param price:
-        @param quantity:
+        :param name:
+        :param price:
+        :param quantity:
         """
         if not name or not price or (not quantity and quantity < 0):
             raise ValueError("Required parameter: Argument cannot be blank!")
@@ -25,22 +25,25 @@ class Product:
             self.name = name
             self.price = price
             self.quantity = quantity
+            self.promotion = promotion
             self.active = True
             # self.active = True if quantity > 0 else False
 
+    def get_promotion(self) -> object:
+        return self.promotion
+
+    def set_promotion(self, promotion):
+        self.promotion = promotion
+
     def get_quantity(self) -> float:
-        """
-        Getter method to return the quantity of the product available in stock
-        @return:
-        """
         return self.quantity
 
     def set_quantity(self, new_quantity):
         """
         Setter method to change the quantity in stock to the new quantity. Every time the quantity is
         changed, is_active() will be toggled depending on the condition.
-        @param new_quantity:
-        @return: None
+        :param new_quantity:
+        :return: None
         """
         self.quantity = new_quantity
         if self.quantity == 0:
@@ -57,24 +60,31 @@ class Product:
     def deactivate(self):
         self.active = False
 
-    def show(self) -> str:
-        return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}"
-
     def buy(self, quantity) -> float:
         """
         Method to make a purchase. The product quantity updates once a purchase is made. The total
         price is returned by this method and raises ValueError if a buyer tries to purchase more
         than the quantity in stock.
         :raises ValueError: if available quantity less than quantity the buyer wants to purchase.
-        @param quantity:
-        @return:
+        :param quantity:
+        :return:
         """
         if quantity > self.quantity:
             raise ValueError(f"There is not enough in stock. Available quantity = {self.quantity}")
         else:
             self.set_quantity(self.quantity - quantity)
-            total_price = self.price * quantity
+            if self.promotion:
+                total_price = self.promotion.apply_promotion(self, quantity)
+            else:
+                total_price = self.price * quantity
         return total_price
+
+    def show(self) -> str:
+        if self.promotion:
+            return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}, " \
+                   f"Promotion: {self.promotion.name}"
+        else:
+            return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}"
 
 
 class NonStockedProduct(Product):
@@ -101,15 +111,21 @@ class NonStockedProduct(Product):
 
     def buy(self, quantity) -> float:
         """
-        @Override: This class should allow unlimited purchases even when the quantity is always 0
-        @param quantity:
-        @return:
+        :Override: This class should allow unlimited purchases even when the quantity is always 0
+        :param quantity:
+        :return:
         """
-        total_price = self.price * quantity
+        if self.promotion:
+            total_price = self.promotion.apply_promotion(self, quantity)
+        else:
+            total_price = self.price * quantity
         return total_price
 
     def show(self) -> str:
-        return f"{self.name}, Price: {self.price}"
+        if self.promotion:
+            return f"{self.name}, Price: {self.price}, Promotion: {self.promotion.name}"
+        else:
+            return f"{self.name}, Price: {self.price}"
 
 
 class LimitedProduct(Product):
@@ -129,8 +145,8 @@ class LimitedProduct(Product):
         than the quantity in stock.
         :raises ValueError: if available quantity less than quantity the buyer wants to purchase
         OR, if a buyer wants to purchase more than the maximum allowed per customer.
-        @param purchase_qty:
-        @return:
+        :param purchase_qty:
+        :return:
         """
         if self.quantity < purchase_qty <= self.maximum:
             raise ValueError(f"There is not enough in stock. Available quantity = {self.quantity}")
@@ -138,11 +154,19 @@ class LimitedProduct(Product):
             raise ValueError(f"A maximum of {self.maximum} units allowed per customer.")
         else:
             self.set_quantity(self.quantity - purchase_qty)
-            total_price = self.price * purchase_qty
+            if self.promotion:
+                total_price = self.promotion.apply_promotion(self, purchase_qty)
+            else:
+                total_price = self.price * purchase_qty
         return total_price
 
     def show(self) -> str:
-        return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}, Maximum: {self.maximum}"
+        if self.promotion:
+            return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}, " \
+                   f"Maximum: {self.maximum}, Promotion: {self.promotion.name}"
+        else:
+            return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}, " \
+                   f"Maximum: {self.maximum}"
 
 
 """

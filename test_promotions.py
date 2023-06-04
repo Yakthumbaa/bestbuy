@@ -13,13 +13,19 @@ def test_percentage_discount():
     shipping_fee = products.LimitedProduct("Shipping", price=10, quantity=250, maximum=1)
 
     # Instantiate the promotion
-    twenty_off = promotions.PercentageDiscount("20% off")
+    twenty_off = promotions.PercentDiscount("20% off", 20)
+    thirty_off = promotions.PercentDiscount("30% off", 30)
 
     # Run Test cases...
     assert twenty_off.name == "20% off"
     assert twenty_off.apply_promotion(macbook_air_m2, 1) == 1160
     assert twenty_off.apply_promotion(windows_license, 10) == 1000
     assert twenty_off.apply_promotion(shipping_fee, 10) == 80
+
+    assert thirty_off.name == "30% off"
+    assert thirty_off.apply_promotion(macbook_air_m2, 1) == 1015
+    assert thirty_off.apply_promotion(windows_license, 10) == 875
+    assert thirty_off.apply_promotion(shipping_fee, 10) == 70
 
 
 def test_second_half_price():
@@ -29,7 +35,7 @@ def test_second_half_price():
     shipping_fee = products.LimitedProduct("Shipping", price=10, quantity=250, maximum=1)
 
     # Instantiate the promotion
-    second_half_price = promotions.SecondHalfOff("Buy 1 get 1 half price")
+    second_half_price = promotions.SecondHalfPrice("Buy 1 get 1 half price")
 
     # Run Test cases...
     assert second_half_price.name == "Buy 1 get 1 half price"
@@ -45,7 +51,7 @@ def test_buy_2_get_1_free():
     shipping_fee = products.LimitedProduct("Shipping", price=10, quantity=250, maximum=1)
 
     # Instantiate the promotion
-    buy_2_get_1_free = promotions.Buy2Get1Free("Buy 2 get 1 free")
+    buy_2_get_1_free = promotions.ThirdOneFree("Buy 2 get 1 free")
 
     # Run Test cases...
     assert buy_2_get_1_free.name == "Buy 2 get 1 free"

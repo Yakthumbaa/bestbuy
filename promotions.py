@@ -23,13 +23,14 @@ class Promotion(ABC):
         pass
 
 
-class PercentageDiscount(Promotion):
+class PercentDiscount(Promotion):
     """
     This is a promotion for 20% off the price of an item.
     """
 
-    def __init__(self, name):
+    def __init__(self, name, percent):
         self.name = name
+        self.percent = percent
 
     def apply_promotion(self, product, quantity) -> float:
         """
@@ -38,10 +39,10 @@ class PercentageDiscount(Promotion):
         :param quantity:
         :return:
         """
-        return (product.price * 0.8) * quantity
+        return round((product.price * (1 - (self.percent / 100))) * quantity)
 
 
-class SecondHalfOff(Promotion):
+class SecondHalfPrice(Promotion):
     """
     This is a promotion for 50% off the second item.
     """
@@ -65,7 +66,7 @@ class SecondHalfOff(Promotion):
         return (product.price * 0.5 * valid_qty) + (product.price * (quantity - valid_qty))
 
 
-class Buy2Get1Free(Promotion):
+class ThirdOneFree(Promotion):
     """
     This is a promotion for 100% off the price of the 3rd item.
     """
