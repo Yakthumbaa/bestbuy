@@ -115,7 +115,7 @@ def test_product_with_promotion():
     google_pixel = products.Product("Google Pixel 7", price=500, quantity=250)
 
     # Instantiate promotions
-    twenty_off = promotions.PercentDiscount("20% off")
+    twenty_off = promotions.PercentDiscount("20% off", 20)
     second_half_price = promotions.SecondHalfPrice("Buy 1 get 1 half price")
     buy_2_get_1_free = promotions.ThirdOneFree("Buy 2 get 1 free")
 
